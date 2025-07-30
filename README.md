@@ -44,7 +44,7 @@ Designed for developers, data scientists, and organizations who want to accelera
 
 ## 🧱 System Architecture
 
-```plaintext
+
 User → Web UI (React + Tailwind)
          ↓
 FastAPI Backend (Python)
