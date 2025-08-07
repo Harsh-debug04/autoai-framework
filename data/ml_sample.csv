@@ -1,0 +1,9 @@
+age,salary,country,purchased
+25,50000,USA,0
+30,80000,UK,1
+35,60000,USA,0
+40,120000,Canada,1
+22,30000,UK,0
+45,150000,Canada,1
+33,75000,USA,0
+28,65000,UK,1

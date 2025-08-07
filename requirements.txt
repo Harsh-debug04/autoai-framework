@@ -9,3 +9,8 @@ sweetviz
 # Data Cleaning
 scikit-learn
 pyjanitor
+
+# Machine Learning Models
+xgboost
+lightgbm
+catboost
