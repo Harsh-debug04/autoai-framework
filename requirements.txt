@@ -1,3 +1,7 @@
 # Core ML & Data Science
 pandas
 numpy
+
+# EDA & Visualization
+ydata-profiling
+sweetviz
