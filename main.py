@@ -1,4 +1,5 @@
 import argparse
+import pandas as pd
 from autoai.core.data_loader import load_data
 from autoai.eda.report import generate_eda_report
 from autoai.core.cleaner import impute_missing_values
@@ -36,7 +37,7 @@ def main():
         help='If set, the data will be automatically cleaned (e.g., missing value imputation).'
     )
 
-    # --- Model Training ---
+    # --- Model Training & Explainability ---
     parser.add_argument(
         "--model",
         type=str,
@@ -48,6 +49,11 @@ def main():
         '--tune',
         action='store_true',
         help='If set, perform hyperparameter tuning for the selected model.'
+    )
+    parser.add_argument(
+        '--explain',
+        action='store_true',
+        help='If set, generate and save model explanation reports (e.g., SHAP plots).'
     )
 
     # --- Reporting ---
@@ -85,7 +91,6 @@ def main():
                 print(f"Error: Target column '{args.target}' not found in the dataset.")
                 return
 
-            # Simple task auto-detection
             if args.task == 'auto':
                 if pd.api.types.is_numeric_dtype(df[args.target]) and df[args.target].nunique() > 15:
                     task = 'regression'
@@ -100,7 +105,8 @@ def main():
                 target_column=args.target,
                 task=task,
                 model_name=args.model,
-                tune_hyperparameters=args.tune
+                tune_hyperparameters=args.tune,
+                explain=args.explain
             )
         else:
             print("\nNo target column specified. Skipping model training.")
