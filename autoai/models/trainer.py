@@ -5,8 +5,9 @@ from sklearn.metrics import accuracy_score, r2_score
 from xgboost import XGBClassifier, XGBRegressor
 from lightgbm import LGBMClassifier, LGBMRegressor
 from catboost import CatBoostClassifier, CatBoostRegressor
+from autoai.explainability.explainer import generate_explanation_report
 
-def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str = 'xgboost', tune_hyperparameters: bool = False):
+def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str = 'xgboost', tune_hyperparameters: bool = False, explain: bool = False):
     """
     Trains and evaluates a machine learning model, with an option for hyperparameter tuning.
 
@@ -16,6 +17,7 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
         task (str): The type of task ('classification' or 'regression').
         model_name (str): The name of the model to train.
         tune_hyperparameters (bool): Whether to perform hyperparameter tuning.
+        explain (bool): Whether to generate an explanation report.
 
     Returns:
         A tuple containing the trained model and its evaluation score on the test set.
@@ -26,7 +28,7 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
     try:
         X = df.drop(columns=[target_column])
         y = df[target_column]
-        X = pd.get_dummies(X, drop_first=True)
+        X = pd.get_dummies(X, drop_first=True, dtype=int)
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -65,7 +67,6 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
                 if model_name == 'catboost':
                     model.set_params(verbose=0)
 
-                # Use a validation set for tuning
                 X_train_part, X_val, y_train_part, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=42)
                 model.fit(X_train_part, y_train_part)
                 preds = model.predict(X_val)
@@ -76,20 +77,19 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
                     return r2_score(y_val, preds)
 
             study = optuna.create_study(direction='maximize')
-            study.optimize(_objective, n_trials=20) # Limit trials for speed
+            study.optimize(_objective, n_trials=20)
 
             best_params = study.best_params
             print(f"--- Tuning Finished ---")
             print(f"Best trial score: {study.best_value:.4f}")
             print(f"Best parameters found: {best_params}")
 
-        # Train final model
         final_model = model_class(**best_params, random_state=42)
         if model_name == 'catboost':
              final_model.set_params(verbose=0)
 
         print("\nTraining final model...")
-        final_model.fit(X_train, y_train) # Train on the full training set
+        final_model.fit(X_train, y_train)
         print("Training complete.")
 
         y_pred = final_model.predict(X_test)
@@ -100,6 +100,9 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
         else:
             score = r2_score(y_test, y_pred)
             print(f"\nFinal Model R-squared on Test Set: {score:.4f}")
+
+        if explain:
+            generate_explanation_report(final_model, X_test, y_test, task)
 
         print("--- Model Training Finished ---")
         return final_model, score

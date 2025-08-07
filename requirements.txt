@@ -17,3 +17,7 @@ catboost
 
 # AutoML & Tuning
 optuna
+
+# Explainability
+shap
+matplotlib
