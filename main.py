@@ -1,6 +1,7 @@
 import argparse
 from autoai.core.data_loader import load_data
 from autoai.eda.report import generate_eda_report
+from autoai.core.cleaner import impute_missing_values
 
 def main():
     """Main function to run the AutoAI pipeline."""
@@ -28,6 +29,12 @@ def main():
         help="Path to save the generated EDA HTML report. e.g., --report eda_report.html"
     )
 
+    parser.add_argument(
+        '--clean',
+        action='store_true',
+        help='If set, the data will be automatically cleaned (e.g., missing value imputation).'
+    )
+
     args = parser.parse_args()
 
     print(f"Data path: {args.data}")
@@ -39,6 +46,12 @@ def main():
     if df is not None:
         print("\nData loaded successfully. First 5 rows:")
         print(df.head())
+
+        # Clean the data if requested
+        if args.clean:
+            df = impute_missing_values(df)
+            print("\nData after cleaning. First 5 rows:")
+            print(df.head())
 
         # Generate EDA report if requested
         if args.report:
