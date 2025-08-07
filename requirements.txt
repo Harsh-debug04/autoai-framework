@@ -1,0 +1,3 @@
+# Core ML & Data Science
+pandas
+numpy
