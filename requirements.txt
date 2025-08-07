@@ -5,3 +5,7 @@ numpy
 # EDA & Visualization
 ydata-profiling
 sweetviz
+
+# Data Cleaning
+scikit-learn
+pyjanitor
