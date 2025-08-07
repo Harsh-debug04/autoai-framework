@@ -44,6 +44,11 @@ def main():
         choices=["xgboost", "lightgbm", "catboost"],
         help="The machine learning model to train."
     )
+    parser.add_argument(
+        '--tune',
+        action='store_true',
+        help='If set, perform hyperparameter tuning for the selected model.'
+    )
 
     # --- Reporting ---
     parser.add_argument(
@@ -94,7 +99,8 @@ def main():
                 df=df,
                 target_column=args.target,
                 task=task,
-                model_name=args.model
+                model_name=args.model,
+                tune_hyperparameters=args.tune
             )
         else:
             print("\nNo target column specified. Skipping model training.")
