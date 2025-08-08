@@ -1,6 +1,7 @@
 # Core ML & Data Science
 pandas
 numpy
+joblib
 
 # EDA & Visualization
 ydata-profiling
@@ -21,3 +22,7 @@ optuna
 # Explainability
 shap
 matplotlib
+
+# Deployment
+fastapi
+uvicorn

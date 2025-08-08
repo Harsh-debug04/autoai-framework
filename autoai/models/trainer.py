@@ -1,5 +1,6 @@
 import pandas as pd
 import optuna
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, r2_score
 from xgboost import XGBClassifier, XGBRegressor
@@ -7,7 +8,7 @@ from lightgbm import LGBMClassifier, LGBMRegressor
 from catboost import CatBoostClassifier, CatBoostRegressor
 from autoai.explainability.explainer import generate_explanation_report
 
-def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str = 'xgboost', tune_hyperparameters: bool = False, explain: bool = False):
+def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str = 'xgboost', tune_hyperparameters: bool = False, explain: bool = False, output_path: str = None):
     """
     Trains and evaluates a machine learning model, with an option for hyperparameter tuning.
 
@@ -18,6 +19,7 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
         model_name (str): The name of the model to train.
         tune_hyperparameters (bool): Whether to perform hyperparameter tuning.
         explain (bool): Whether to generate an explanation report.
+        output_path (str, optional): Path to save the trained model. Defaults to None.
 
     Returns:
         A tuple containing the trained model and its evaluation score on the test set.
@@ -103,6 +105,15 @@ def train_model(df: pd.DataFrame, target_column: str, task: str, model_name: str
 
         if explain:
             generate_explanation_report(final_model, X_test, y_test, task)
+
+        if output_path:
+            print(f"\nSaving trained model and columns to {output_path}...")
+            model_payload = {
+                'model': final_model,
+                'columns': X_train.columns.tolist()
+            }
+            joblib.dump(model_payload, output_path)
+            print("Model and columns saved successfully.")
 
         print("--- Model Training Finished ---")
         return final_model, score
