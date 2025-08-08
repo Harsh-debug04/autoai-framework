@@ -1,140 +1,101 @@
-# AutoAI: End-to-End Automated Machine Learning Platform
+# AutoAI: Core ML Pipeline
 
-AutoAI is a **production-ready**, **open-source AutoML framework** that handles the complete machine learning lifecycle for **tabular**, **image**, and **text** data — from raw datasets to deployed, explainable models.
+AutoAI is an open-source framework that automates key stages of the machine learning lifecycle for tabular data. This version contains the core engine for data loading, cleaning, EDA, training, tuning, and explainability, all accessible via a powerful command-line interface (CLI) and a servable REST API.
 
-Designed for developers, data scientists, and organizations who want to accelerate their ML workflows without sacrificing flexibility or interpretability.
-
----
-
-## Features
-
-✅ **All-in-One System**  
-- Supports Tabular, Image, and NLP data  
-- Automatic data cleaning, feature engineering, and model training  
-- Smart task detection (classification, regression, etc.)
-
- **State-of-the-Art Modeling**  
-- Gradient Boosting (XGBoost, LightGBM, CatBoost)  
-- Deep Learning (PyTorch for CV and Transformers for NLP)  
-- AutoML backends: Optuna, AutoGluon, TabPFN, and more
-
- **Automated EDA**  
-- Generates detailed, visual reports (via Sweetviz, Plotly, YData Profiling)
-
- **Hyperparameter Tuning**  
-- Bayesian optimization using Optuna
-
- **Explainability & Trust**  
-- SHAP, LIME, Counterfactuals  
-- Fairness metrics and Model Cards
-
- **Frontend UI**  
-- Beautiful React + Tailwind interface  
-- Drag & drop CSV/image/text upload  
-- Real-time results and plots
-
- **Deployment Ready**  
-- FastAPI REST backend  
-- Dockerized for cloud + CI/CD (GitHub Actions)  
-- One-click prediction API
-
- **Modular, Scalable, Customizable**
+This project was developed to a point where the core backend is functional but could not be fully containerized due to environment constraints. It is ready to be picked up in a new environment for final deployment and UI development.
 
 ---
 
-##  System Architecture
+## Core Features Implemented
 
+*   **Automated EDA**: Generate a comprehensive HTML report from a dataset.
+*   **Data Cleaning**: Automatic imputation of missing values.
+*   **Model Training**: Train XGBoost, LightGBM, and CatBoost models.
+*   **Hyperparameter Tuning**: Use Optuna to find the best model hyperparameters.
+*   **Model Explainability**: Generate detailed evaluation metrics and SHAP feature importance plots.
+*   **Model Serving**: A FastAPI backend to serve trained models via a `/predict` endpoint.
+*   **Save/Load Models**: Ability to save trained models to a file for later use.
 
-User → Web UI (React + Tailwind)
-         ↓
-FastAPI Backend (Python)
-         ↓
-Data Ingestion → EDA → Model Training → Tuning → Explainability
-         ↓
-Deployment API + HTML/PDF Report + Predictions
+---
 
- Project Structure
-bash
-Copy
-Edit
-autoai/
-├── core/                  # Data preprocessing & transformation
-├── eda/                   # Automated EDA modules
-├── models/                # Model training: tabular, text, image
-├── explainability/        # SHAP, LIME, fairness
-├── deployment/            # FastAPI + Docker + CI/CD
-├── ui/                    # React + Tailwind frontend
-├── utils/                 # Logging, metrics, helpers
-├── configs/               # YAML/JSON pipeline configs
-├── tests/                 # Unit + integration tests
-├── notebooks/             # Experiment tracking
-├── Dockerfile
-├── main.py                # CLI entry point
-└── README.md
-⚙ Tech Stack
-Layer	Technology
-Frontend	React, Tailwind, Vite
-Backend	FastAPI, Python 3.10+
-ML Libraries	Scikit-learn, XGBoost, LightGBM, CatBoost
-DL Libraries	PyTorch, HuggingFace Transformers
-AutoML Tools	Optuna, AutoGluon, TabPFN
-EDA & Reports	Sweetviz, YData Profiling, SHAP
-Deployment	Docker, Uvicorn, GitHub Actions
+## Quickstart
 
- Quickstart
-⚙ Backend Setup
-bash
-Copy
-Edit
-git clone https://github.com/your-username/autoai-framework.git
-cd autoai-framework
+### 1. Setup Environment
 
- Setup environment
+It is highly recommended to use a virtual environment.
+
+```bash
+# Create and activate a virtual environment
 python -m venv venv
-venv\Scripts\activate         # Windows
+source venv/bin/activate  # On Linux/macOS
+# venv\Scripts\activate  # On Windows
+
+# Install all dependencies
 pip install -r requirements.txt
- Frontend Setup
-bash
-Copy
-Edit
-cd ui
-npm install
-npm run dev
- Example Usage (CLI)
-bash
-Copy
-Edit
-python main.py --data data/sample.csv --task auto
- Sample Output
- Auto-generated PDF report
+```
 
- Model performance dashboard
+### 2. CLI Usage Examples
 
- Feature importance + SHAP plots
+The main entry point is `main.py`. Use `python main.py --help` to see all available commands.
 
- REST API with endpoints like /predict, /upload, /metrics
+#### Generate an EDA Report
+```bash
+python main.py --data data/sample.csv --report eda_report.html
+```
+This will create a detailed `eda_report.html` file in your directory.
 
- Roadmap
- Tabular model pipeline
+#### Train a Model
+This command will load the data, clean it (impute missing values), train an XGBoost model, and save the final model to a file.
+```bash
+python main.py \
+  --data data/ml_sample.csv \
+  --target purchased \
+  --clean \
+  --output-model trained_model.joblib
+```
 
- EDA + profiling
+#### Train with Tuning and Explainability
+This is the full-power command. It will perform hyperparameter tuning with Optuna and generate SHAP explanation plots.
+```bash
+python main.py \
+  --data data/ml_sample.csv \
+  --target purchased \
+  --clean \
+  --tune \
+  --explain \
+  --output-model tuned_model.joblib
+```
+This will create `tuned_model.joblib` and `shap_summary.png`.
 
- Explainability
+### 3. Running the API Server
 
- React + FastAPI integration
+The API allows you to serve a trained model.
 
- Image and NLP pipeline
+**Step 1: Train and save a model** (if you haven't already)
+```bash
+python main.py --data data/ml_sample.csv --target purchased --output-model trained_model.joblib
+```
 
- Full MLOps CI/CD
+**Step 2: Run the API server**
+```bash
+uvicorn autoai.api.main:app --host 0.0.0.0 --port 8000
+```
+The server will start, and you should see a message that the model was loaded.
 
- Hugging Face Spaces deployment
+**Step 3: Send a prediction request** (from another terminal)
+```bash
+curl -X POST "http://localhost:8000/predict" \
+-H "Content-Type: application/json" \
+-d '{"data": {"age": 40, "salary": 90000, "country_UK": 1, "country_USA": 0}}'
+```
+You should receive a JSON response with the prediction, e.g., `{"prediction":1}`.
 
- Contributing
-Want to contribute? Open issues or submit PRs. Feedback, feature ideas, or bug reports are welcome.
+---
 
- Creator
-Harshwardhan Pandey
-ML Researcher, Full Stack Engineer
-LinkedIn | GitHub | Portfolio
+## Next Steps for Development
 
- Star the repo if you find this useful!
+This project is ready for the next phases in a larger environment:
+
+1.  **Dockerization**: The included `Dockerfile` is designed to containerize the application. It failed to build in the previous environment due to disk space limitations. The next step is to run `docker build -t autoai-app .`.
+2.  **UI Development**: A Streamlit or React UI can be built to interact with the FastAPI backend, providing a user-friendly interface for the entire pipeline.
+3.  **Expanding Features**: In a larger environment, the full feature set (AutoGluon, NLP, CV models) can be implemented.
