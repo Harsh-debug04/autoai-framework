@@ -55,6 +55,12 @@ def main():
         action='store_true',
         help='If set, generate and save model explanation reports (e.g., SHAP plots).'
     )
+    parser.add_argument(
+        '--output-model',
+        type=str,
+        default=None,
+        help='Path to save the final trained model file (e.g., model.joblib).'
+    )
 
     # --- Reporting ---
     parser.add_argument(
@@ -106,7 +112,8 @@ def main():
                 task=task,
                 model_name=args.model,
                 tune_hyperparameters=args.tune,
-                explain=args.explain
+                explain=args.explain,
+                output_path=args.output_model
             )
         else:
             print("\nNo target column specified. Skipping model training.")
