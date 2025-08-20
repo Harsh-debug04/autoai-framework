@@ -92,6 +92,16 @@ You should receive a JSON response with the prediction, e.g., `{"prediction":1}`
 
 ---
 
+## Design Documents
+
+The following documents provide a detailed overview of the project's architecture, workflow, and technology stack:
+
+*   [**Tech Stack**](./tech_stack.md): A comprehensive list of all technologies, libraries, and frameworks used.
+*   [**System Architecture**](./architecture.md): A high-level diagram illustrating the components and their interactions.
+*   [**CLI Flowchart**](./flowchart.md): A flowchart detailing the step-by-step process of the command-line tool.
+
+---
+
 ## Next Steps for Development
 
 
