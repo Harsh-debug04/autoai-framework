@@ -2,7 +2,7 @@
 
 AutoAI is an open-source framework that automates key stages of the machine learning lifecycle for tabular data. This version contains the core engine for data loading, cleaning, EDA, training, tuning, and explainability, all accessible via a powerful command-line interface (CLI) and a servable REST API.
 
-This project was developed to a point where the core backend is functional but could not be fully containerized due to environment constraints. It is ready to be picked up in a new environment for final deployment and UI development.
+This project is ready to be picked up in a new environment for final deployment and UI development.
 
 ---
 
@@ -94,7 +94,6 @@ You should receive a JSON response with the prediction, e.g., `{"prediction":1}`
 
 ## Next Steps for Development
 
-This project is ready for the next phases in a larger environment:
 
 1.  **Dockerization**: The included `Dockerfile` is designed to containerize the application. It failed to build in the previous environment due to disk space limitations. The next step is to run `docker build -t autoai-app .`.
 2.  **UI Development**: A Streamlit or React UI can be built to interact with the FastAPI backend, providing a user-friendly interface for the entire pipeline.
