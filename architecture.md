@@ -21,13 +21,13 @@ graph LR
     end
 
     subgraph Model Serving
-        C -- Loads --> J[Trained Model (.joblib)];
-        C -- Serves --> K[/predict Endpoint];
+        C -- Loads --> J["Trained Model (.joblib)"];
+        C -- Serves --> K["/predict Endpoint"];
     end
 
     subgraph Outputs
-        F --> L[EDA Report (.html)];
-        I --> M[SHAP Plot (.png)];
+        F --> L["EDA Report (.html)"];
+        I --> M["SHAP Plot (.png)"];
         G --> J;
     end
 
